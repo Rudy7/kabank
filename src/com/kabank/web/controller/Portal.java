@@ -1,46 +1,61 @@
 package com.kabank.web.controller;
 
-import java.lang.reflect.Member;
+import java.awt.Menu;
 import java.util.Scanner;
 
-import com.kabank.web.service.AccountService;
+import org.omg.CORBA.SystemException;
+
 import com.kabank.web.service.MemberService;
+import com.kabank.web.serviceImpl.AccountServiceImpl;
+import com.kabank.web.serviceImpl.MemberServiceImpl;
+import com.kabank.wep.bean.MemberBean;
 
 public class Portal {
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
-		String name = "";
-		
-		while(true) {
-			System.out.println("[MENU] 0.종료 1.회원가입 2.계좌개설");
+		System.out.println("회원수 입력");
+		MemberServiceImpl memberService = new MemberServiceImpl(scanner.nextInt());
+		MemberBean member = null;
+			while(true) {
+			System.out.println("[MENU] 0.종료 1.회원가입 2.계좌개설 3.총회원수 4.회원목록");
 			switch(scanner.nextInt()) {
 			case 0:
 				System.out.println("종료");
 				return;
 			case 1 :
-				MemberService memberService = new MemberService();
-				
+				member = new MemberBean();
 				System.out.print("이름 입력 : ");
-				memberService.setName(scanner.next());
+				member.setName(scanner.next());
 				System.out.println("주민번호");
-				memberService.setSsn(scanner.next());
-				memberService.setCustomNum();
-				memberService.setGender();
-				memberService.setAge();
-				System.out.printf("[고객번호] \n" + memberService.getCustomNum()
-								+ "[주민번호]" + memberService.getSsn()
-								+ "[이름]  \n" + memberService.getName()
-								+ "[성별] \n" + memberService.getGender()
-								+ "[나이] \n" + memberService.getAge()
+				member.setSsn(scanner.next());
+				member.setCustomNum(memberService.createCustomNum());
+				member.setGender(memberService.findGender(member.getSsn()));
+				member.setAge(memberService.findAge(member.getSsn()));
+				memberService.addMember(member);
+				System.out.printf("\n[고객번호]" + member.getCustomNum()
+								+ "\n[주민번호]" + member.getSsn()
+								+ "\n[이름]" + member.getName()
+								+ "\n[성별]" + member.getGender()
+								+ "\n[나이]" + member.getAge()
 								);
 				break;
 			case 2:
-				AccountService account = new AccountService();  //디폴드 생성자가 어카운트 서비스클래스에 있었는데.  우리 눈에 안 보이는 것이다.  그래서 여기서 이렇게 사용한다.
-				account.setAccountNum();
+				AccountServiceImpl accountService = new AccountServiceImpl();  //디폴드 생성자가 어카운트 서비스클래스에 있었는데.  우리 눈에 안 보이는 것이다.  그래서 여기서 이렇게 사용한다.
+				accountService.setAccountNum();
 				System.out.print("이름 입력 : ");
-				name = scanner.next();
-				System.out.println(name + "님의 계좌가 " 
-				+ account.getAccountNum() + "로 개설 되었습니다");
+				accountService.setName(scanner.next());
+				accountService.setAccountNum();
+				System.out.println("[이름]" + accountService.getName()
+								  +"[계좌번호]" + accountService.getAccountNum());
+				break;
+			case 3:
+				System.out.println("총 회원수 : " + memberService.count());
+				break;
+			case 4:
+				MemberBean[] members = memberService.list();
+				for(int i=0; i<members.length; i++) {
+				System.out.println(members[i].getName());
+				}
 				break;
 			}
 		}
