@@ -2,6 +2,10 @@ package com.kabank.web.serviceImpl;
 
 import java.util.Random;
 
+/*
+ * 님 앞으로 1234-통장개설이 되었습니다.
+ */
+
 public class AccountServiceImpl {
 	private String name;
 	private int accountNum;
@@ -17,14 +21,15 @@ public class AccountServiceImpl {
 	public void setAccountNum() {
 		Random r = new Random();
 		boolean flag = true;
+		// Q. 100000~999999 6자리가 만들어지면 빠져나와라
 		while (flag) {
-			int temp = r.nextInt(1000000);
-			if (temp > 100000) {
-				accountNum = temp;
-				flag = false;
-			} else {
-				flag = true;
-			}
+			int temp = r.nextInt(1000000);   				//한번쓰고 말 변수들은 이렇게 바로 이닛을 해라
+				if (temp > 100000) {
+					accountNum = temp;
+					flag = false;
+				} else {
+					flag = true;
+				}
 		}
 	}
 
@@ -34,53 +39,3 @@ public class AccountServiceImpl {
 
 }
 
-// package com.kabank.web.service;
-//
-// import java.util.Random;
-// import java.util.Scanner;
-// public class AccountService {
-// Random gen = new Random();
-// private String name = "";
-// String accNum = "";
-// public String createAccount(Scanner scanner) {
-// for(int i = 0; i < 16; i++) {
-// if(i != 0 && i % 4 == 0) {
-// accNum += "-";
-// }
-// accNum += gen.nextInt(10);
-// }
-// return accNum;
-// }
-// public String getName() {
-// return name;
-// }
-// public void setName(String name) {
-// this.name = name;
-// }
-// }
-
-// package com.kabank.web.service;
-// import java.util.Random;
-// import java.util.Scanner;
-//// 홍길동 1234 계좌번호 발급
-// public class AccountService {
-// public int createAccount() {
-//// (Scanner scanner) 이게 파라미터라고한다 매개변수
-// String name = "";
-// System.out.print("이름");
-// // 100000 ~ 999999
-// Random r = new Random();
-// int accountNo = 0;
-// boolean flag = true;
-// while(flag) {
-// int temp = r.nextInt(1000000);
-// if(temp >= 100000) {
-// accountNo = temp;
-// flag = false;
-// }else {
-// flag = true;
-// }
-// }
-// return accountNo;
-// }
-// }

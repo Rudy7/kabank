@@ -1,4 +1,4 @@
-package com.kabank.wep.bean;
+package com.kabank.web.bean;
 
 public class AccountBean {
 

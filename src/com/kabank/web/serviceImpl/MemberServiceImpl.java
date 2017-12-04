@@ -1,40 +1,68 @@
 package com.kabank.web.serviceImpl;
 
 import java.util.Calendar;
-
+import com.kabank.web.bean.MemberBean;
 import com.kabank.web.service.MemberService;
-import com.kabank.wep.bean.MemberBean;
+//import com.school.web.bean.StudentBean;
+//import com.school.web.service.StudentService;
 
 public class MemberServiceImpl implements MemberService {
-	private MemberBean[] members;    
-	private int count;    // 빈 클래스가 아니라 impl클래스라서  getcount 대신 count를 쓴다. 
+	private MemberBean[] members;    						//집합체는 입장이 좀 다르다. setget 할필요 X
+	private int count;   									// 빈 클래스가 아니라 impl클래스라서  getcount 대신 count를 쓴다. 
 	
-	public MemberServiceImpl(int count) {  //생성자를 만드는 것
+	public MemberServiceImpl(int count) { 			   	    //생성자를 만드는 것
 		members = new MemberBean[count];
 		this.count = 0;
 	}
 	
-	public void setCount(int count) {
-		this.count= count;
-	}
-	public int getCount() {
-		return count;
-	}
+//public class StudentServiceImpl implements StudentService {
+//		
+//	private StudentBean[] students;
+//	private int count;
+//		
+//	public StudentServiceImpl(int count) {
+//		students = new StudentBean[count];
+//		this.count = 0;
+//	}}
+	
+	
+//	public class StudentServiceImpl implements StudentService{
+//     // String[] arr = new String[4];
+//	private StudentBean[] students = new StudentBean[3];  
+//
+//	이건 문법이 잘못된 구조이다. 
+//	생성자 --> 생성자라는 것은 메모리 내에 인스턴스(객체)가 생성될때 자동적으로 단 한번 호출되어 클래스(객체)의 구조를 인식하게 하고 생성되는 클래스(객체)의 멤버변수들을 초기화하는 데 목적을 둔 것을 말한다. 
+//
+//	이유 -  생성자가 없어서. 
+//	데이터가 0 이거나 null이면 생성자는 자동으로 생성된다.  하지만 그 데이터값이 있을때는 직접 생성자를 만들어야만 한다. 
+//	여기에서는 배열에 3개의 데이터값이 있기 때문에 디폴트생성자(자동으로 생기는)는 의미가 없어졌고, 
+//	없는 것과 같다.  그래서 생성자를 직접 만들어 줘야 한다.  
+//
+//	public StudentServiceImpl() {
+//	            // TODO Auto-generated constructor stub
+//	      }
 	
 	@Override
 	public int count() {
 		return this.count;
-	}			
+	}	
+	
+	@Override
+	public void addMember (MemberBean member) {
+		members[count] = member;          				 // 회원수를 무한이 늘려야해서 몇명인지 물어보고 그 수만큼 회원수의 제한을 잡기위해 쓴다1. 
+		count++;
+	}
+	
 	@Override
 	public int createCustomNum() {
-		int foo = 0;
-		
+		int foo = 101;
 		return foo;
-		
 	}
-	@Override
+	
+	@Override			//오버라이드로 묶어준것(알고리즘 하나당 오버라이드 하나). 이러면 알고리즘은 숨겨짐(겉에서 안보임) 이게 있어야 메뉴판과 연동.
 	public String findGender(String ssn) {
-		String foo = "";
+		String foo = "";									// temp를 줘야한다! 왜냐면 지역변수의 쓰임을 구분하려고.
+															// this.gender = this.ssn; //읽어 들이는 것과 쓰는 것을 구분한 이유? 보안때문에
 		char ch = ssn.charAt(7);
 		if (ch == '1' || ch == '3') {
 			foo = "남";
@@ -45,43 +73,60 @@ public class MemberServiceImpl implements MemberService {
 		} else {
 			foo = "다시 입력해주세요";
 		}
-		return foo;
+		return foo;										// foo는 답을 담기위해 만든것!
 	}
+	
 	@Override
-	public int findAge(String ssn) {
-		int foo = 0, ch = 0;
-			String res = "", c2 = "";
-			int c1 = 0, age = 0;
-			Calendar cl = Calendar.getInstance();
-			c1 = cl.get(cl.YEAR);
-			res = ssn.charAt(0) + "" + ssn.charAt(1);
-			ch = Integer.parseInt(res);
-			
-			if(res.charAt(0) == '0') {
-				ch= 20 + res;
-			}else {
-				ch = 19 + res;
-			}
-			System.out.println(res);
-//			c2 = Integer.parseInt(res);
-//			age = (int) ((c1 - c2) + 1) ;
-//			
-			return age;
+	public int findAge(String ssn) {					// ssn저장장소가 bean이기 떄문에 서비스에서는 각각 다받아야된다
+		int age = 0, bir = 0, gap = 0;					// ssn = ""; //사실 this.ssn 을 그냥 ssn으로 생략해도 된다
+		String res = "";
+		Calendar cal = Calendar.getInstance();
+		int now = cal.get(cal.YEAR);  
+		char ch0 = ssn.charAt(0);
+		res += ch0;
+		char ch1 = ssn.charAt(1);
+		res += ch1;
+
+		int result = Integer.parseInt(res);				// if(!"".equals(res)){                    //만약 받아온 데이터가 공백이 아니면 데이터를 형변환 하여 적재 
+														//		result = Integer.parseInt(res);
+		gap = now - result;								//		}
+		if (gap>=2000) {
+			bir = 2000 + result; 
+		}else {
+			bir = 1900 + result;
+		}
+		age = now - bir;
+		return age;
 	}	
-		
-		@Override
-		public void addMember (MemberBean member) {
-			members[count] = member;
-			count++;
-		}
-		
-		@Override
-		public MemberBean[] list() {
-			return members;
-		}
 	
 	
-	} 
+	/*
+	@Override
+	public void setCount(int count) {				//setCount는 의미가 없다. 안만들어도 되고, 만들지 말아야할때도 있는데 일단은 배우는중이니 만들자.
+		this.count = count;							//그리고 관례적으로 getset은 Bean에서만 만드는것. 
+	}												//그러니까 Bean외에선 그냥 겟카운트 역할을 이름다르게 만들자
+	@Override
+	public int getCount() {
+		return this.count;
+	}
+	*/
+	
+	@Override
+	public MemberBean[] list() {
+		return members;
+	}
+	
+}
+/*
+ * public String join(String ssn) { 위에 ssn을 setter getter로 설정했기 때문에 이제 join메소드는
+ * 필요없다 // TODO Auto-generated method stub String res = ""; res += "[고객번호]101";
+ * 
+ * res += "[이름]홍길동";
+ * 
+ * res += "[성별]남";
+ * 
+ * res += "[나이]30"; return res; }
+ */
 
 
 
@@ -89,161 +134,3 @@ public class MemberServiceImpl implements MemberService {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-// public String[] join(String ssn) {
-// Calendar cl = Calendar.getInstance();
-// String res[] = new String[2];
-// String ssnTemp = "";
-// char temp1 = 0, temp2 = 0;
-// int c1 = 0, c2 = 0, result = 0;
-// temp1 = ssn.charAt(7);
-// if(temp1 == '1' || temp1 == '3') { // 성별 체크
-// res[0] = "남";
-// } else if(temp1 == '2' || temp1 == '4') {
-// res[0] = "여";
-// } else {
-// res[0] = "누구냐넌";
-// }
-// c1 = cl.get(cl.YEAR);
-// temp2 = ssn.charAt(0); // 주민번호 첫째자리를 temp2에 assignment
-// ssnTemp += temp2; // ssnTemp에 첫째자리를 붙혀넣는다
-// temp2 = ssn.charAt(1); // 주민번호 둘째자리를 temp2에 assignment
-// ssnTemp += temp2; // ssnTemp에 둘째자리를 붙혀넣는다
-//
-// // 2000년도와 1900년도는 7번째 주민번호가 다르다
-// // 조건을 줘서 구분한다.
-// if(temp1 == '3' || temp1 == '4') { // 2000 ~
-// ssnTemp = "20" + ssnTemp; // ex) 2000, 2001, 2005, etc.
-// } else { // 1900 ~ 1999
-// ssnTemp = "19" + ssnTemp; // ex) 1984, 1986, 1988, 1990, etc.
-// System.out.println(ssnTemp);// ex) 2000, 2001, 2005, etc.
-// }
-// c2 = Integer.parseInt(ssnTemp); // String Type의 res[1]을 int type으로 변환해서 c2에
-// assignment
-// result = (c1 - c2) + 1; // 우리나라의 나이는 1살으로 시작하기 때문에 +1
-// res[1] = String.valueOf(result); // result 값을 String type으로 변환
-// return res;
-// }
-// }
-
-// package com.kabank.web.service;
-//
-// import java.util.Calendar;
-// public class MemberService {
-// String id;
-// String name;
-// String ssn;
-// String gender;
-// int age;
-// public MemberService(){
-// id = "101";
-// name = "";
-// ssn = "";
-// gender = "";
-// age = 0;
-// }
-// public void join(String ssn) {
-// Calendar cl = Calendar.getInstance();
-// String res = "";
-// char temp = 0;
-// int c1 = 0, c2 = 0;
-// temp = ssn.charAt(7);
-// if(temp == '1' || temp == '3') {
-// gender = "남";
-// } else if(temp == '2' || temp == '4') {
-// gender = "여";
-// } else {
-// gender = "누구냐넌";
-// }
-// c1 = cl.get(cl.YEAR);
-// temp = ssn.charAt(0);
-// res += temp;
-// temp = ssn.charAt(1);
-// res += temp;
-// if(res.charAt(0) == '0') {
-// res = "20" + res;
-// } else {
-// res = "19" + res;
-// }
-// c2 = Integer.parseInt(res);
-// age = (c1 - c2) + 1;
-// }
-// public String getName() {
-// return name;
-// }
-// public void setName(String name) {
-// this.name = name;
-// }
-// public String getSsn() {
-// return ssn;
-// }
-// public void setSsn(String ssn) {
-// this.ssn = ssn;
-// }
-// public String getId() {
-// return id;
-// }
-// public void setId(String id) {
-// this.id = id;
-// }
-// public String getGender() {
-// return gender;
-// }
-// public void setGender(String gender) {
-// this.gender = gender;
-// }
-// public int getAge() {
-// return age;
-// }
-// public void setAge(int age) {
-// this.age = age;
-// }
-// }
-
-// package com.kabank.web.service;
-//
-// import java.util.Calender;
-//
-// public MemberService() {
-//
-// String id;
-// String name;
-// String ssn;
-// String gender;
-// int age;
-//
-// public MemberService() {
-// id = "101";
-// name = "";
-// ssn = "";
-// gender = "";
-// age = 0;
-//
-// public String join(String ssn)
-// String res = "", gender = "",result = "";
-// res += "[고객번호]101";
-// char ch = ssn.charAt(7);
-// if(ch=='1'||ch=='3') {
-// result = "남자";
-// }else if(ch=='2'||ch=='4') {
-// result = "여자";
-// }else if(ch=='5'||ch=='6'){
-// result = "외국인";
-// }else {
-// result = "다시 입력하세요.";
-// }
-// return res + gender;
-// }
-// }
-//
