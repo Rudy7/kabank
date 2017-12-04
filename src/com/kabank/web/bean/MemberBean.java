@@ -3,6 +3,7 @@ package com.kabank.web.bean;
 public class MemberBean {
 	private int customNum, age;
 	private String name, gender, ssn;
+//	private MemberBean[] members;    이렇게 할 수 없다.  이유 : 객체들의 집합체라서 몸하나에 12명 넣는격
 
 	// 0 또는 null을 줄때는 생성자를 안 만들어도 된다.
 	public void setCustomNum(int customNum) {           //setter라고 한다. 외부에서 값을 받아줘야해서 파라미터가 있다

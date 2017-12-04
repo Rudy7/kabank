@@ -6,9 +6,9 @@ import com.kabank.web.service.MemberService;
 //import com.school.web.bean.StudentBean;
 //import com.school.web.service.StudentService;
 
-public class MemberServiceImpl implements MemberService {
-	private MemberBean[] members;    						//집합체는 입장이 좀 다르다. setget 할필요 X
-	private int count;   									// 빈 클래스가 아니라 impl클래스라서  getcount 대신 count를 쓴다. 
+public class MemberServiceImpl implements MemberService {   //
+	private MemberBean[] members;    	//보안을 위해서,몇명인지 하려고 배열을 이용, 집합체는 입장이 좀 다르다. setget 할필요 X
+	private int count;   	//하나씩 호출하려고 	// 빈 클래스가 아니라 impl클래스라서  getcount 대신 count를 쓴다. 
 	
 	public MemberServiceImpl(int count) { 			   	    //생성자를 만드는 것
 		members = new MemberBean[count];
