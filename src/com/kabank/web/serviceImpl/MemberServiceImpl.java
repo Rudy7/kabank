@@ -2,6 +2,9 @@ package com.kabank.web.serviceImpl;
 
 import java.util.Calendar;
 import java.util.Vector;
+
+import javax.swing.JOptionPane;
+
 import com.kabank.web.bean.MemberBean;
 import com.kabank.web.service.MemberService;
 
@@ -9,7 +12,7 @@ public class MemberServiceImpl implements MemberService { //
 	// private MemberBean[] members; //보안을 위해서,몇명인지 하려고 배열을 이용, 집합체는 입장이 좀 다르다.
 	// setget 할필요 X\
 	private Vector<MemberBean> members;
-	
+
 	// 하나씩 호출하려고 // 빈 클래스가 아니라 impl클래스라서 getcount 대신 count를 쓴다.
 
 	public MemberServiceImpl() { // 생성자를 만드는 것
@@ -21,7 +24,7 @@ public class MemberServiceImpl implements MemberService { //
 	@Override
 	public void addMember(MemberBean member) {
 		// members[count] = member; // 회원수를 무한이 늘려야해서 몇명인지 물어보고 그 수만큼 회원수의 제한을 잡기위해 쓴다1.
-			members.add(member);
+		members.add(member);
 	}
 
 	@Override
@@ -72,47 +75,128 @@ public class MemberServiceImpl implements MemberService { //
 
 	@Override
 	public Vector<MemberBean> list() {
-		
+
 		return members;
 	}
 
 	@Override
 	public int count() {
-		
+
 		return members.size();
 	}
 
 	@Override
-	public void deleteAll() {          //clear();
-		
-		
-		
+	public void deleteAll(String inputOk) { // clear();
+			if(inputOk.equals("Y")) {
+				members.clear();
+			}else {
+				JOptionPane.showMessageDialog(null, "모든 회원 삭제를 취소합니다.");
+			}
+			return res;
+}	
+
+	@Override
+	public void delete(String inputOk, String id) { // remove
+//			String inputOk = JOptionPane.showInputDialog("정말 회원을 탈퇴를 하시겠습니까?  Y , N ");
+			if(inputOk.equals("Y")) {
+				for (int i = 0; i < members.size(); i++) {
+					if (id.equals(members.get(i).getId())) {
+						members.remove(i);
+					}	
+				}
+			}else {
+				JOptionPane.showMessageDialog(null, "회원 삭제를 취소합니다.");
+			}
+		}
+
+	public String login(MemberBean member) { // 3가지 프린트 나오게. 아이디가 존재안합니다. / 비번이 다릅니다./ 로그인되었습니다.
+		String res = "아이디 없음";
+		for (int i = 0; i < members.size(); i++) {
+			if (member.getId().equals(members.get(i).getId())) { // members.get(i).getId())는 쉘로우다.
+				res = (member.getPass().equals(members.get(i).getPass())) ? "로그인 되었습니다." : "비번이 다릅니다.";
+
+				return res;
+			}
+		}
+		return res; // 두 번 쓰는게 더 좋다고 한다
+	}
+	// for (int i = 0; i < members.size(); i++) {
+	// if (member.getId().equals(members.get(i).getId())) { //
+	// members.get(i).getId())는 쉘로우다.
+	// if (member.getPass().equals(members.get(i).getPass())) {
+	// res = "로그인 되었습니다.";
+	// break;
+	// } else {
+	// res = "비번이 다릅니다.";
+	// break;
+	// }
+	// } else {
+	// res = "존재하지 않는 아이디입니다.";
+	// break;
+	// }
+	// }
+	// return res;
+	// }
+
+	@Override
+	public void updatePass(String id) {
+		for (int i = 0; i < members.size(); i++) {
+			if (id.equals(members.get(i).getId())) {
+				members.get(i).setPass(JOptionPane.showInputDialog("변경하실 비밀번호를 입력해주세요."));
+				JOptionPane.showInternalMessageDialog(null, "비밀번호가 변경되었습니다.");	
+			}
+		}
 	}
 
 	@Override
-	public void delete(String id) {    //remove
-		String res = "";
-//		for(int i=0; i<; i++) {
-//			if(id.equals(get(i).getId)) {
-				
+	public MemberBean findById(String id) {
+		MemberBean res = new MemberBean();
+		for (int i = 0; i < members.size(); i++) {
+			if (id.equals(members.get(i).getId())) {
+				String m8 = "", m9 = "";
+				int i1 = members.get(i).getCustomNum();
+				int i2 = members.get(i).getAge();
+				String i3 = members.get(i).getName();
+				String i4 = members.get(i).getGender();
+				String i5 = members.get(i).getSsn();
+				String i6 = members.get(i).getId();
+				String i7 = members.get(i).getPass();
+				m8 = String.valueOf(i1 + i2);
+				m9 = m8.concat(i3 + i4 + i5 + i6 + i7);
+				JOptionPane.showMessageDialog(null, m9);
 			}
-//		}
-		 
+
+		}
+		return res;
 	}
 
-	/*
-	 * @Override public void setCount(int count) { //setCount는 의미가 없다. 안만들어도 되고, 만들지
-	 * 말아야할때도 있는데 일단은 배우는중이니 만들자. this.count = count; //그리고 관례적으로 getset은 Bean에서만
-	 * 만드는것. } //그러니까 Bean외에선 그냥 겟카운트 역할을 이름다르게 만들자
-	 * 
-	 * @Override public int getCount() { return this.count; }
-	 */
+	@Override
+	public MemberBean findByName(String name) {
+		MemberBean[] memberc = null;
+		MemberBean res = new MemberBean();
+		for (int i = 0; i < members.size(); i++) {
+			if (name.equals(members.get(i).getName())) {
+				memberc = new MemberBean[res];
+				res = members.get(i);
+				res++;
+			}
+		}
+		return res;
+	}
+}
 
-	// @Override
-	// public MemberBean[] list() {
-	// return members;
-	// }
+/*
+ * @Override public void setCount(int count) { //setCount는 의미가 없다. 안만들어도 되고, 만들지
+ * 말아야할때도 있는데 일단은 배우는중이니 만들자. this.count = count; //그리고 관례적으로 getset은 Bean에서만
+ * 만드는것. } //그러니까 Bean외에선 그냥 겟카운트 역할을 이름다르게 만들자
+ * 
+ * @Override public int getCount() { return this.count; }
+ */
 
+// @Override
+// public MemberBean[] list() {
+// return members;
+// }
 
 /*
  * public String join(String ssn) { 위에 ssn을 setter getter로 설정했기 때문에 이제 join메소드는

@@ -12,7 +12,11 @@ public interface MemberService {
 	public int findAge(String ssn);					// 메뉴판에 없는걸 서비스임플로 가서 오버라이드로 묶으면 에러난다.
 	public Vector<MemberBean> list();
 	public int count();
-	public void deleteAll();
-	public void delete(String id);
+	public void deleteAll(String inputOk);
+	public void delete(String inputOk, String id);
+	public void updatePass(String id);
+	public MemberBean findById(String id);
+	public MemberBean findByName(String name);
+	
 	
 }
